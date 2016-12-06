@@ -12,7 +12,28 @@ class PTTparser:
         pass
 
     def parsePage(self, boardName, pageNum):
-        pass
+        pageIndex = '/index' + str(pageNum) + '.html'
+        pageURL = self.PTTaddress + boardName + pageIndex
+        print(pageURL)
+        print('=====')
+
+        response = requests.get(pageURL)
+        html = response.content.decode('utf-8')
+        soup = BeautifulSoup(html, 'html.parser')
+
+        titles = soup.find_all('div', class_='title')
+
+        for t in titles:
+            if '(本文已被刪除)' in t.text:
+                print('deleted page')
+            else:
+                print(t.text.strip())
+                articleLink = t.find('a').get('href')
+                print(articleLink)
+                articleID = articleLink.split('/')[3].replace('.html', '')
+                print(articleID)
+
+            print('-----')
 
     def parseArticle(self, boardName, articleID):
         articleURL = self.PTTaddress + boardName + '/' + articleID + '.html'
