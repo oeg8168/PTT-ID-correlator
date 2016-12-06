@@ -1,5 +1,6 @@
 import requests
 import json
+import re
 from bs4 import BeautifulSoup
 
 
@@ -24,7 +25,7 @@ class PTTparser:
         titles = soup.find_all('div', class_='title')
 
         for t in titles:
-            if '(本文已被刪除)' in t.text:
+            if self.isDeleted(t.text):
                 print('deleted page')
             else:
                 print(t.text.strip())
@@ -34,6 +35,14 @@ class PTTparser:
                 print(articleID)
 
             print('-----')
+
+    def isDeleted(self, title):
+        if '(本文已被刪除)' in title:
+            return True
+        elif re.search('(已被.*刪除)', title):
+            return True
+        else:
+            return False
 
     def parseArticle(self, boardName, articleID):
         articleURL = self.PTTaddress + boardName + '/' + articleID + '.html'
