@@ -22,23 +22,15 @@ class PTTparser:
         html = response.content.decode('utf-8')
         soup = BeautifulSoup(html, 'html.parser')
 
-        titles = soup.find_all('div', class_='title')
+        allTitleTags = soup.find_all('div', class_='title')
 
         articleList = []
-        for t in titles:
-            if self.isDeleted(t.text):
+        for titleTag in allTitleTags:
+            if self.isDeleted(titleTag.text):
                 pass
             else:
-                articleTitle = t.text.strip()
-                articleLink = t.find('a').get('href')
-                articleID = basename(articleLink).replace('.html', '')
-                article = {
-                    'articleTitle': articleTitle,
-                    'articleLink': articleLink,
-                    'articleID': articleID
-                }
-
-                articleList.append(article)
+                articleInfo = self.getArticleInfoFromPage(titleTag)
+                articleList.append(articleInfo)
 
         pageJson = {
             'boardName': boardName,
@@ -58,6 +50,19 @@ class PTTparser:
             return True
         else:
             return False
+
+    def getArticleInfoFromPage(self, titleTag):
+        articleTitle = titleTag.text.strip()
+        articleLink = titleTag.find('a').get('href')
+        articleID = basename(articleLink).replace('.html', '')
+
+        articleInfo = {
+            'articleTitle': articleTitle,
+            'articleLink': articleLink,
+            'articleID': articleID
+        }
+
+        return articleInfo
 
     def parseArticle(self, boardName, articleID):
         articleURL = self.PTTaddress + boardName + '/' + articleID + '.html'
