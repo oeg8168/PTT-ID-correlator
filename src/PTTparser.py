@@ -22,15 +22,8 @@ class PTTparser:
         html = response.content.decode('utf-8')
         soup = BeautifulSoup(html, 'html.parser')
 
-        allTitleTags = soup.find_all('div', class_='title')
-
-        articleList = []
-        for titleTag in allTitleTags:
-            if self.isDeleted(titleTag.text):
-                pass
-            else:
-                articleInfo = self.getArticleInfoFromPage(titleTag)
-                articleList.append(articleInfo)
+        allTitleTags = self.getAllTitleTagsFromPage(soup)
+        articleList = self.getArticleListFromPage(allTitleTags)
 
         pageJson = {
             'boardName': boardName,
@@ -42,6 +35,21 @@ class PTTparser:
         jsonText = json.dumps(pageJson, sort_keys=True,
                               indent=4, ensure_ascii=False)
         print(jsonText)
+
+    def getAllTitleTagsFromPage(self, soup):
+        return soup.find_all('div', class_='title')
+
+    def getArticleListFromPage(self, allTitleTags):
+        articleList = []
+
+        for titleTag in allTitleTags:
+            if self.isDeleted(titleTag.text):
+                pass
+            else:
+                articleInfo = self.getArticleInfoFromPage(titleTag)
+                articleList.append(articleInfo)
+
+        return articleList
 
     def isDeleted(self, title):
         if '(本文已被刪除)' in title:
