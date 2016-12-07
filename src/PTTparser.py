@@ -2,6 +2,7 @@ import requests
 import json
 import re
 from bs4 import BeautifulSoup
+from os.path import basename
 
 
 class PTTparser:
@@ -16,7 +17,6 @@ class PTTparser:
         pageIndex = '/index' + str(pageNum) + '.html'
         pageURL = self.PTTaddress + boardName + pageIndex
         print(pageURL)
-        print('=====')
 
         response = requests.get(pageURL)
         html = response.content.decode('utf-8')
@@ -27,11 +27,11 @@ class PTTparser:
         articleList = []
         for t in titles:
             if self.isDeleted(t.text):
-                print('deleted page')
+                pass
             else:
                 articleTitle = t.text.strip()
                 articleLink = t.find('a').get('href')
-                articleID = articleLink.split('/')[3].replace('.html', '')
+                articleID = basename(articleLink).replace('.html', '')
                 article = {
                     'articleTitle': articleTitle,
                     'articleLink': articleLink,
@@ -67,15 +67,15 @@ class PTTparser:
         html = response.content.decode('utf-8')
         soup = BeautifulSoup(html, 'html.parser')
 
-        metas = self.getArticleMeta(soup)
-        allPushs = self.getAllPushs(soup)
+        metas = self.getMetasFromArticle(soup)
+        allPushs = self.getAllPushsFromArticle(soup)
 
         articleJSON = {
-            'authorID': self.getArticleAuthorID(metas),
+            'authorID': self.getAuthorIDFromArticle(metas),
             'boardName': boardName,
-            'title': self.getArticleTitle(metas),
-            'postTime': self.getArticlePostTime(metas),
-            'pushMessages': self.getArticlePushMessages(allPushs)
+            'title': self.getTitleFromArticle(metas),
+            'postTime': self.getPostTimeFromArticle(metas),
+            'pushMessages': self.getPushMessagesFromArticle(allPushs)
         }
 
         print('=====JSON=====')
@@ -83,23 +83,23 @@ class PTTparser:
                               indent=4, ensure_ascii=False)
         print(jsonText)
 
-    def getArticleMeta(self, soup):
+    def getMetasFromArticle(self, soup):
         return soup.find_all('span', class_='article-meta-value')
         # return soup.find_all('span', {'class': 'article-meta-value'})
 
-    def getAllPushs(self, soup):
+    def getAllPushsFromArticle(self, soup):
         return soup.find_all('div', class_='push')
 
-    def getArticleAuthorID(self, metas):
+    def getAuthorIDFromArticle(self, metas):
         return metas[0].text.split(' ')[0]
 
-    def getArticleTitle(self, metas):
+    def getTitleFromArticle(self, metas):
         return metas[2].text
 
-    def getArticlePostTime(self, metas):
+    def getPostTimeFromArticle(self, metas):
         return metas[3].text
 
-    def getArticlePushMessages(self, allPushs):
+    def getPushMessagesFromArticle(self, allPushs):
         pushMessages = []
         for p in allPushs:
             message = {
