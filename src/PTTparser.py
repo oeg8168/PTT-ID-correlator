@@ -10,8 +10,27 @@ class PTTparser:
     def __init__(self):
         self.PTTaddress = 'https://www.ptt.cc/bbs/'
 
-    def parseBoard(self, boardName):
-        pass
+    def parseBoard(self, boardName, pagesToBeParsed=100):
+        boardURL = self.PTTaddress + boardName + '/index.html'
+        # TODO get latest
+        print(boardURL)
+
+        response = requests.get(boardURL)
+        html = response.content.decode('utf-8')
+        soup = BeautifulSoup(html, 'html.parser')
+
+        pagingButtons = soup.find_all('a', class_='btn wide')
+
+        latestPageLink = pagingButtons[1].get('href')
+        latestPageNum = re.search('\d+', latestPageLink).group(0)
+
+        latestPageNum = int(latestPageNum)
+        parsePageNum = latestPageNum
+        for i in range(pagesToBeParsed):
+            print(i)
+            print(parsePageNum)
+            parsePageNum -= 1
+            self.parsePage('Tainan', parsePageNum)
 
     def parsePage(self, boardName, pageNum):
         pageIndex = '/index' + str(pageNum) + '.html'
