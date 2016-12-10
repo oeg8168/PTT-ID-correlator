@@ -46,16 +46,17 @@ class PTTparser:
         allTitleTags = self.getAllTitleTagsFromPage(soup)
         articleList = self.getArticleListFromPage(allTitleTags)
 
-        pageJson = {
+        pageDict = {
             'boardName': boardName,
             'pageNumber': pageNum,
             'articleList': articleList
         }
 
         print('=====JSON=====')
-        jsonText = json.dumps(pageJson, sort_keys=True,
+        jsonText = json.dumps(pageDict, sort_keys=True,
                               indent=4, ensure_ascii=False)
         print(jsonText)
+        return pageDict
 
     def getAllTitleTagsFromPage(self, soup):
         return soup.find_all('div', class_='title')
@@ -102,7 +103,7 @@ class PTTparser:
         metas = self.getMetasFromArticle(soup)
         allPushs = self.getAllPushsFromArticle(soup)
 
-        articleJSON = {
+        articleDict = {
             'authorID': self.getAuthorIDFromArticle(metas),
             'boardName': boardName,
             'title': self.getTitleFromArticle(metas),
@@ -111,9 +112,10 @@ class PTTparser:
         }
 
         print('=====JSON=====')
-        jsonText = json.dumps(articleJSON, sort_keys=True,
+        jsonText = json.dumps(articleDict, sort_keys=True,
                               indent=4, ensure_ascii=False)
         print(jsonText)
+        return articleDict
 
     def getMetasFromArticle(self, soup):
         return soup.find_all('span', class_='article-meta-value')
