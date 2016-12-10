@@ -10,13 +10,16 @@ class PTTparser:
     def __init__(self):
         self.PTTaddress = 'https://www.ptt.cc/bbs/'
 
+    def getSoup(self, URL, encoding='utf-8'):
+        response = requests.get(URL)
+        html = response.content.decode(encoding)
+        return BeautifulSoup(html, 'html.parser')
+
     def parseBoard(self, boardName, pagesToBeParsed=100):
         boardURL = self.PTTaddress + boardName + '/index.html'
         print(boardURL)
 
-        response = requests.get(boardURL)
-        html = response.content.decode('utf-8')
-        soup = BeautifulSoup(html, 'html.parser')
+        soup = self.getSoup(boardURL)
 
         latestPageNum = self.getLatestPageNum(soup)
 
@@ -38,9 +41,7 @@ class PTTparser:
         pageURL = self.PTTaddress + boardName + pageIndex
         print(pageURL)
 
-        response = requests.get(pageURL)
-        html = response.content.decode('utf-8')
-        soup = BeautifulSoup(html, 'html.parser')
+        soup = self.getSoup(pageURL)
 
         allTitleTags = self.getAllTitleTagsFromPage(soup)
         articleList = self.getArticleListFromPage(allTitleTags)
@@ -96,9 +97,7 @@ class PTTparser:
         articleURL = self.PTTaddress + boardName + '/' + articleID + '.html'
         print(articleURL)
 
-        response = requests.get(articleURL)
-        html = response.content.decode('utf-8')
-        soup = BeautifulSoup(html, 'html.parser')
+        soup = self.getSoup(articleURL)
 
         metas = self.getMetasFromArticle(soup)
         allPushs = self.getAllPushsFromArticle(soup)
