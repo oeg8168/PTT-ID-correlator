@@ -23,11 +23,14 @@ class PTTparser:
 
         latestPageNum = self.getLatestPageNum(soup)
 
+        parseResult = []
         parsePageNum = latestPageNum
         for i in range(pagesToBeParsed):
-            print('page: ' + str(parsePageNum))
+            # print('page: ' + str(parsePageNum))
+            parseResult.append(self.parsePage(boardName, parsePageNum))
             parsePageNum -= 1
-            self.parsePage('Tainan', parsePageNum)
+
+        return parseResult
 
     def getLatestPageNum(self, soup):
         pagingButtons = soup.find_all('a', class_='btn wide')
