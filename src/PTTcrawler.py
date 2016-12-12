@@ -32,13 +32,24 @@ class PTTcrawler:
             'timeStamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
 
-        crawlDate = datetime.now().strftime('%Y%m%d')
-        dataFileName = 'boardResult' + crawlDate + '_' + boardName + '.json'
-        dataFilePath = self.databasePath + dataFileName
-        with open(dataFilePath, 'w', encoding='utf-8') as f:
+        crawlResultFilePath = self.getCrawlResultFilePath(boardName)
+
+        self.saveCrawlResultToFile(crawlResult, crawlResultFilePath)
+
+    def getCrawlResultFilePath(self, boardName):
+        crawlDate = self.getCrawlDate()
+        crawlResultText = 'boardResult' + crawlDate
+        crawlResultFileName = crawlResultText + '_' + boardName + '.json'
+        return self.databasePath + crawlResultFileName
+
+    def getCrawlDate(self):
+        return datetime.now().strftime('%Y%m%d')
+
+    def saveCrawlResultToFile(self, crawlResult, crawlResultFilePath):
+        with open(crawlResultFilePath, 'w', encoding='utf-8') as f:
             json.dump(crawlResult, f, sort_keys=True,
                       indent=4, ensure_ascii=False)
-            print('Crawl result saved at:', dataFilePath)
+            print('Crawl result saved at:', crawlResultFilePath)
 
     def updateDatabase(self):
         pass

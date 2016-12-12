@@ -30,7 +30,7 @@ class PTTparser:
             # print('page: ' + str(parsePageNum))
             parseResult.append(self.parsePage(boardName, parsePageNum))
             parsePageNum -= 1
-            print(str(i + 1)+'/'+str(pagesToBeParsed), 'page(s) parsed.', end='\r', flush=True)
+            print(str(i + 1) + '/' + str(pagesToBeParsed), 'page(s) parsed.')
 
         return parseResult
 
