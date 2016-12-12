@@ -16,8 +16,9 @@ class PTTparser:
         return BeautifulSoup(html, 'html.parser')
 
     def parseBoard(self, boardName, pagesToBeParsed=100):
+        print('Parsing board...', 'boardname:', boardName)
         boardURL = self.PTTaddress + boardName + '/index.html'
-        print(boardURL)
+        # print(boardURL)
 
         soup = self.getSoup(boardURL)
 
@@ -29,6 +30,7 @@ class PTTparser:
             # print('page: ' + str(parsePageNum))
             parseResult.append(self.parsePage(boardName, parsePageNum))
             parsePageNum -= 1
+            print(str(i + 1)+'/'+str(pagesToBeParsed), 'page(s) parsed.', end='\r', flush=True)
 
         return parseResult
 
@@ -42,7 +44,7 @@ class PTTparser:
     def parsePage(self, boardName, pageNum):
         pageIndex = '/index' + str(pageNum) + '.html'
         pageURL = self.PTTaddress + boardName + pageIndex
-        print(pageURL)
+        # print(pageURL)
 
         soup = self.getSoup(pageURL)
 
@@ -55,10 +57,10 @@ class PTTparser:
             'articleList': articleList
         }
 
-        print('=====JSON=====')
-        jsonText = json.dumps(pageDict, sort_keys=True,
-                              indent=4, ensure_ascii=False)
-        print(jsonText)
+        # print('=====JSON=====')
+        # jsonText = json.dumps(pageDict, sort_keys=True,
+        #                       indent=4, ensure_ascii=False)
+        # print(jsonText)
         return pageDict
 
     def getAllTitleTagsFromPage(self, soup):
@@ -99,7 +101,7 @@ class PTTparser:
 
     def parseArticle(self, boardName, articleID):
         articleURL = self.PTTaddress + boardName + '/' + articleID + '.html'
-        print(articleURL)
+        # print(articleURL)
 
         soup = self.getSoup(articleURL)
 
@@ -114,10 +116,10 @@ class PTTparser:
             'pushMessages': self.getPushMessagesFromArticle(allPushs)
         }
 
-        print('=====JSON=====')
-        jsonText = json.dumps(articleDict, sort_keys=True,
-                              indent=4, ensure_ascii=False)
-        print(jsonText)
+        # print('=====JSON=====')
+        # jsonText = json.dumps(articleDict, sort_keys=True,
+        #                       indent=4, ensure_ascii=False)
+        # print(jsonText)
         return articleDict
 
     def getMetasFromArticle(self, soup):
