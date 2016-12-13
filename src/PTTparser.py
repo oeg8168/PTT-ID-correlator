@@ -12,8 +12,25 @@ class PTTparser:
 
     def getSoup(self, URL, encoding='utf-8'):
         response = requests.get(URL)
-        html = response.content.decode(encoding)
+        html = response.content.decode(encoding, errors='ignore')
         return BeautifulSoup(html, 'html.parser')
+
+    def parseHotBoard(self):
+        hotBoardURL = 'https://www.ptt.cc/hotboard.html'
+        soup = self.getSoup(hotBoardURL, 'big5')
+
+        hotBoardTags = soup.find_all('table')
+
+        hotBoardList = []
+        for tag in hotBoardTags:
+            hotBoardList.append(tag.find_all('td')[1].text)
+
+        # print('=====Hot boards=====')
+        # for hb in hotBoardList:
+            # print(hb)
+        # print('count:', len(hotBoardList))
+
+        return hotBoardList
 
     def parseBoard(self, boardName, pagesToBeParsed=100):
         print('Parsing board...', 'boardname:', boardName)
