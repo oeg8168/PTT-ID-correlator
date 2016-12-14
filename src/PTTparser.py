@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+from time import sleep
 from bs4 import BeautifulSoup
 from os.path import basename
 
@@ -49,6 +50,8 @@ class PTTparser:
             parsePageNum -= 1
             print(str(i + 1) + '/' + str(pagesToBeParsed), 'page(s) parsed.')
 
+            sleep(1)
+
         return parseResult
 
     def getLatestPageNum(self, soup):
@@ -87,7 +90,7 @@ class PTTparser:
         articleList = []
 
         for titleTag in allTitleTags:
-            if self.isDeleted(titleTag.text):
+            if self.isDeleted(titleTag):
                 pass
             else:
                 articleInfo = self.getArticleInfoFromPage(titleTag)
@@ -95,10 +98,8 @@ class PTTparser:
 
         return articleList
 
-    def isDeleted(self, title):
-        if '(本文已被刪除)' in title:
-            return True
-        elif re.search('(已被.*刪除)', title):
+    def isDeleted(self, titleTag):
+        if titleTag.find('a') is None:
             return True
         else:
             return False

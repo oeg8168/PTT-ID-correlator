@@ -19,8 +19,18 @@ class PTTcrawler:
             makedirs(self.databasePath)
             print('Created database.')
 
-    def crawlAllBoards(self):
-        pass
+    def crawlHotBoards(self):
+        hotBoardList = self.pttParser.parseHotBoard()
+        for board in hotBoardList:
+            try:
+                self.crawlBoard(board)
+            except Exception as e:
+                print('===Exception Found===')
+                print(e)
+            else:
+                pass
+            finally:
+                print()
 
     def crawlBoard(self, boardName):
         pagesToBeCrawl = 5
