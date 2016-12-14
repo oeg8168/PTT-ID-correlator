@@ -12,7 +12,7 @@ class PTTparser:
         self.PTTaddress = 'https://www.ptt.cc/bbs/'
 
     def getSoup(self, URL, encoding='utf-8'):
-        response = requests.get(URL)
+        response = requests.get(URL, cookies={'over18': '1'})
         html = response.content.decode(encoding, errors='ignore')
         return BeautifulSoup(html, 'html.parser')
 
