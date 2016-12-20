@@ -13,6 +13,8 @@ class PTTparser:
 
     def getSoup(self, URL, encoding='utf-8'):
         response = requests.get(URL, cookies={'over18': '1'})
+        if response.status_code != 200:
+            raise RuntimeError
         html = response.content.decode(encoding, errors='ignore')
         return BeautifulSoup(html, 'html.parser')
 
