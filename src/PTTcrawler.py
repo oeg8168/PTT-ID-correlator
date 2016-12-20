@@ -61,5 +61,40 @@ class PTTcrawler:
                       indent=4, ensure_ascii=False)
             print('Crawl result saved at:', crawlResultFilePath)
 
+    def crawlArticlesInBoard(self, boardName):
+        boardResultPath = self.databasePath + 'boardResult20161214_' + boardName + '.json'
+        print(boardResultPath)
+
+        with open(boardResultPath, encoding='utf8') as f:
+            boardResult = json.load(f)
+        # print(boardResult)
+        # print(len(boardResult['crawlPages']))
+
+        allArticleList = []
+        for page in boardResult['crawlPages']:
+            allArticleList += page['articleList']
+            # print(len(page['articleList']))
+            # print()
+
+        # print(allArticleList)
+        for articleInfo in allArticleList:
+            print(articleInfo['articleID'])
+            try:
+                article = self.pttParser.parseArticle(boardName, articleInfo['articleID'])
+            except Exception as e:
+                print('Page Not Found')
+            else:
+                print('author:', article['authorID'])
+                for push in article['pushMessages']:
+                    print(push['pushUserID'])
+            finally:
+                print()
+
+        # crawlResult = {
+        #     'timeStamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # }
+
+        # crawlResultFilePath = self.getCrawlResultFilePath(boardName)
+
     def updateDatabase(self):
         pass
