@@ -42,11 +42,11 @@ class PTTcrawler:
             'timeStamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
 
-        crawlResultFilePath = self.getCrawlResultFilePath(boardName)
+        crawlResultFilePath = self.getCrawlBoardResultFilePath(boardName)
 
         self.saveCrawlResultToFile(crawlResult, crawlResultFilePath)
 
-    def getCrawlResultFilePath(self, boardName):
+    def getCrawlBoardResultFilePath(self, boardName):
         crawlDate = self.getCrawlDate()
         crawlResultText = 'boardResult' + crawlDate
         crawlResultFileName = crawlResultText + '_' + boardName + '.json'
@@ -62,39 +62,47 @@ class PTTcrawler:
             print('Crawl result saved at:', crawlResultFilePath)
 
     def crawlArticlesInBoard(self, boardName):
-        boardResultPath = self.databasePath + 'boardResult20161214_' + boardName + '.json'
+        boardResultPath = self.databasePath + 'boardResult20161221_' + boardName + '.json'
         print(boardResultPath)
 
         with open(boardResultPath, encoding='utf8') as f:
             boardResult = json.load(f)
-        # print(boardResult)
-        # print(len(boardResult['crawlPages']))
 
-        allArticleList = []
+        allArticleInfoList = []
         for page in boardResult['crawlPages']:
-            allArticleList += page['articleList']
-            # print(len(page['articleList']))
-            # print()
+            allArticleInfoList += page['articleList']
 
-        # print(allArticleList)
-        for articleInfo in allArticleList:
-            print(articleInfo['articleID'])
+        allArticle = []
+        for articleInfo in allArticleInfoList:
+            articleID = articleInfo['articleID']
+            print(articleID)
             try:
-                article = self.pttParser.parseArticle(boardName, articleInfo['articleID'])
+                article = self.pttParser.parseArticle(boardName, articleID)
             except Exception as e:
                 print('Page Not Found')
             else:
+                allArticle.append(article)
                 print('author:', article['authorID'])
                 for push in article['pushMessages']:
                     print(push['pushUserID'])
             finally:
                 print()
 
-        # crawlResult = {
-        #     'timeStamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # }
+        crawlResult = {
+            'crawlArticles': allArticle,
+            'crawlArticlesCount': len(allArticle),
+            'timeStamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
 
-        # crawlResultFilePath = self.getCrawlResultFilePath(boardName)
+        crawlResultFilePath = self.getCrawlArticleResultFilePath(boardName)
+
+        self.saveCrawlResultToFile(crawlResult, crawlResultFilePath)
+
+    def getCrawlArticleResultFilePath(self, boardName):
+        crawlDate = self.getCrawlDate()
+        crawlResultText = 'articleResult' + crawlDate
+        crawlResultFileName = crawlResultText + '_' + boardName + '.json'
+        return self.databasePath + crawlResultFileName
 
     def updateDatabase(self):
         pass
