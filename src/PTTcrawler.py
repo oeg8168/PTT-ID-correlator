@@ -68,25 +68,9 @@ class PTTcrawler:
         with open(boardResultPath, encoding='utf8') as f:
             boardResult = json.load(f)
 
-        allArticleInfoList = []
-        for page in boardResult['crawlPages']:
-            allArticleInfoList += page['articleList']
+        allArticleInfoList = self.getAllArticleInfoList(boardResult)
 
-        allArticle = []
-        for articleInfo in allArticleInfoList:
-            articleID = articleInfo['articleID']
-            print(articleID)
-            try:
-                article = self.pttParser.parseArticle(boardName, articleID)
-            except Exception as e:
-                print('Page Not Found')
-            else:
-                allArticle.append(article)
-                print('author:', article['authorID'])
-                for push in article['pushMessages']:
-                    print(push['pushUserID'])
-            finally:
-                print()
+        allArticle = self.getAllArticle(boardName, allArticleInfoList)
 
         crawlResult = {
             'crawlArticles': allArticle,
@@ -97,6 +81,32 @@ class PTTcrawler:
         crawlResultFilePath = self.getCrawlArticleResultFilePath(boardName)
 
         self.saveCrawlResultToFile(crawlResult, crawlResultFilePath)
+
+    def getAllArticleInfoList(self, boardResult):
+        allArticleInfoList = []
+        for page in boardResult['crawlPages']:
+            allArticleInfoList += page['articleList']
+
+        return allArticleInfoList
+
+    def getAllArticle(self, boardName, articleInfoList):
+        allArticle = []
+        for articleInfo in articleInfoList:
+            articleID = articleInfo['articleID']
+            print(articleID)
+            try:
+                article = self.pttParser.parseArticle(boardName, articleID)
+            except Exception as e:
+                print('Page Not Found')
+            else:
+                allArticle.append(article)
+                print('author:', article['authorID'])
+                for push in article['pushMessages']:
+                    print((article['authorID'], push['pushUserID']))
+            finally:
+                print()
+
+        return allArticle
 
     def getCrawlArticleResultFilePath(self, boardName):
         crawlDate = self.getCrawlDate()
