@@ -1,4 +1,5 @@
 import json
+import glob
 from os.path import isdir
 from os import makedirs
 from datetime import datetime
@@ -62,10 +63,10 @@ class PTTcrawler:
             print('Crawl result saved at:', crawlResultFilePath)
 
     def crawlArticlesInBoard(self, boardName):
-        boardResultPath = self.databasePath + 'boardResult20161221_' + boardName + '.json'
-        print(boardResultPath)
+        latestBoardResultPath = self.getLatestBoardResultPath(boardName)
+        print(latestBoardResultPath)
 
-        with open(boardResultPath, encoding='utf8') as f:
+        with open(latestBoardResultPath, encoding='utf8') as f:
             boardResult = json.load(f)
 
         allArticleInfoList = self.getAllArticleInfoList(boardResult)
@@ -82,6 +83,10 @@ class PTTcrawler:
 
         self.saveCrawlResultToFile(crawlResult, crawlResultFilePath)
 
+    def getLatestBoardResultPath(self, boardName):
+        pattern = self.databasePath + 'boardResult*' + boardName + '.json'
+        return glob.glob(pattern)[-1]
+
     def getAllArticleInfoList(self, boardResult):
         allArticleInfoList = []
         for page in boardResult['crawlPages']:
@@ -93,16 +98,17 @@ class PTTcrawler:
         allArticle = []
         for articleInfo in articleInfoList:
             articleID = articleInfo['articleID']
-            print(articleID)
+
+            print('Board:', boardName)
+            print('Article ID:', articleID)
+
             try:
                 article = self.pttParser.parseArticle(boardName, articleID)
             except Exception as e:
                 print('Page Not Found')
             else:
                 allArticle.append(article)
-                print('author:', article['authorID'])
-                for push in article['pushMessages']:
-                    print((article['authorID'], push['pushUserID']))
+                print('Parsed successfully.')
             finally:
                 print()
 
