@@ -1,40 +1,26 @@
 import json
 import glob
-from os.path import isdir
-from os import makedirs
 from datetime import datetime
+
 from src.PTTparser import PTTparser
+from src.DBmanage import DBmanage
 
 
 class PTTcrawler:
 
     def __init__(self):
+        self.db = DBmanage()
         self.pttParser = PTTparser()
-
-        self.databasePath = './database/'
-        self.createDatabaseFolder()
-
-    def createDatabaseFolder(self):
-        if not isdir(self.databasePath):
-            print('Database folder not exists!')
-            makedirs(self.databasePath)
-            print('Created database.')
 
     def crawlHotBoards(self):
         hotBoardList = self.pttParser.parseHotBoard()
         for board in hotBoardList:
-            try:
-                self.crawlBoard(board)
-            except Exception as e:
-                print('===Exception Found===')
-                print(e)
-            else:
-                pass
-            finally:
-                print()
+            self.crawlBoard(board)
+            self.crawlArticlesInBoard(board)
 
     def crawlBoard(self, boardName):
-        pagesToBeCrawl = 5
+        pagesToBeCrawl = 2
+        print('Crawling board...', 'boardname:', boardName)
         parseBoardResult = self.pttParser.parseBoard(boardName, pagesToBeCrawl)
 
         crawlResult = {
@@ -45,27 +31,22 @@ class PTTcrawler:
 
         crawlResultFilePath = self.getCrawlBoardResultFilePath(boardName)
 
-        self.saveCrawlResultToFile(crawlResult, crawlResultFilePath)
+        self.db.saveCrawlResult(crawlResult, crawlResultFilePath)
 
     def getCrawlBoardResultFilePath(self, boardName):
         crawlDate = self.getCrawlDate()
         crawlResultText = 'boardResult' + crawlDate
         crawlResultFileName = crawlResultText + '_' + boardName + '.json'
-        return self.databasePath + crawlResultFileName
+        return self.db.getDBPath() + crawlResultFileName
 
     def getCrawlDate(self):
         return datetime.now().strftime('%Y%m%d')
 
-    def saveCrawlResultToFile(self, crawlResult, crawlResultFilePath):
-        with open(crawlResultFilePath, 'w', encoding='utf-8') as f:
-            json.dump(crawlResult, f, sort_keys=True,
-                      indent=4, ensure_ascii=False)
-            print('Crawl result saved at:', crawlResultFilePath)
-
     def crawlArticlesInBoard(self, boardName):
         latestBoardResultPath = self.getLatestBoardResultPath(boardName)
-        print(latestBoardResultPath)
 
+        print('Crawling articles in board...', 'boardname:', boardName)
+        print('load boardResult from', latestBoardResultPath)
         with open(latestBoardResultPath, encoding='utf8') as f:
             boardResult = json.load(f)
 
@@ -81,10 +62,10 @@ class PTTcrawler:
 
         crawlResultFilePath = self.getCrawlArticleResultFilePath(boardName)
 
-        self.saveCrawlResultToFile(crawlResult, crawlResultFilePath)
+        self.db.saveCrawlResult(crawlResult, crawlResultFilePath)
 
     def getLatestBoardResultPath(self, boardName):
-        pattern = self.databasePath + 'boardResult*' + boardName + '.json'
+        pattern = self.db.getDBPath() + 'boardResult*' + boardName + '.json'
         return glob.glob(pattern)[-1]
 
     def getAllArticleInfoList(self, boardResult):
@@ -99,8 +80,7 @@ class PTTcrawler:
         for articleInfo in articleInfoList:
             articleID = articleInfo['articleID']
 
-            print('Board:', boardName)
-            print('Article ID:', articleID)
+            print('Board:', boardName, '\t', 'Article ID:', articleID)
 
             try:
                 article = self.pttParser.parseArticle(boardName, articleID)
@@ -118,7 +98,4 @@ class PTTcrawler:
         crawlDate = self.getCrawlDate()
         crawlResultText = 'articleResult' + crawlDate
         crawlResultFileName = crawlResultText + '_' + boardName + '.json'
-        return self.databasePath + crawlResultFileName
-
-    def updateDatabase(self):
-        pass
+        return self.db.getDBPath() + crawlResultFileName

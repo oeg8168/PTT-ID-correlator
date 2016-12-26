@@ -36,7 +36,6 @@ class PTTparser:
         return hotBoardList
 
     def parseBoard(self, boardName, pagesToBeParsed=100):
-        print('Parsing board...', 'boardname:', boardName)
         boardURL = self.PTTaddress + boardName + '/index.html'
         # print(boardURL)
 
