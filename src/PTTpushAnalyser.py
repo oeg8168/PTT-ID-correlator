@@ -1,10 +1,30 @@
+import json
+
+from src.DBmanage import DBmanage
+
+
 class PTTpushAnalyser:
 
     def __init__(self):
+        db = DBmanage()
+
+    def analyse(self):
         pass
 
-    def loadCrawledResult(self):
-        pass
+    def loadCrawledResult(self, artucleResultFilePath):
+        with open(artucleResultFilePath, encoding='utf8') as f:
+            articleResult = json.load(f)
 
-    def gatherAuthorPusherPairs(self):
-        pass
+        return articleResult
+
+    def getAllAuthorPusherPairs(self, crawlArticles):
+        allAuthorPusherPairs = []
+        for artical in crawlArticles:
+            authorID = artical['authorID']
+            for push in artical['pushMessages']:
+                pushUserID = push['pushUserID']
+                pushTag = push['pushTag']
+                authorPusherPair = (authorID, pushUserID, pushTag)
+                allAuthorPusherPairs.append(authorPusherPair)
+
+        return allAuthorPusherPairs
