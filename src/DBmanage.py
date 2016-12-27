@@ -3,6 +3,7 @@ import shutil
 
 from os import makedirs
 from os.path import isdir
+from datetime import datetime
 
 
 class DBmanage:
@@ -32,3 +33,28 @@ class DBmanage:
                       indent=4, ensure_ascii=False)
             print('Crawl result saved at:', crawlResultFilePath)
             print()
+
+    def getCrawlDate(self):
+        return datetime.now().strftime('%Y%m%d')
+
+    def saveCrawledBoardResult(self, crawlResult):
+        boardName = crawlResult['boardName']
+        crawlResultFilePath = self.getBoardResultFilePath(boardName)
+        self.saveCrawlResult(crawlResult, crawlResultFilePath)
+
+    def getBoardResultFilePath(self, boardName):
+        crawlDate = self.getCrawlDate()
+        crawlResultText = 'boardResult' + crawlDate
+        crawlResultFileName = crawlResultText + '_' + boardName + '.json'
+        return self.databasePath + crawlResultFileName
+
+    def saveCrawledArticleResult(self, crawlResult):
+        boardName = crawlResult['boardName']
+        crawlResultFilePath = self.getArticleResultFilePath(boardName)
+        self.saveCrawlResult(crawlResult, crawlResultFilePath)
+
+    def getArticleResultFilePath(self, boardName):
+        crawlDate = self.getCrawlDate()
+        crawlResultText = 'articleResult' + crawlDate
+        crawlResultFileName = crawlResultText + '_' + boardName + '.json'
+        return self.databasePath + crawlResultFileName

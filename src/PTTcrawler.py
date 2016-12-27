@@ -24,23 +24,13 @@ class PTTcrawler:
         parseBoardResult = self.pttParser.parseBoard(boardName, pagesToBeCrawl)
 
         crawlResult = {
+            'boardName': boardName,
             'crawlPages': parseBoardResult,
             'crawlPagesCount': len(parseBoardResult),
             'timeStamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
 
-        crawlResultFilePath = self.getCrawlBoardResultFilePath(boardName)
-
-        self.db.saveCrawlResult(crawlResult, crawlResultFilePath)
-
-    def getCrawlBoardResultFilePath(self, boardName):
-        crawlDate = self.getCrawlDate()
-        crawlResultText = 'boardResult' + crawlDate
-        crawlResultFileName = crawlResultText + '_' + boardName + '.json'
-        return self.db.getDBPath() + crawlResultFileName
-
-    def getCrawlDate(self):
-        return datetime.now().strftime('%Y%m%d')
+        self.db.saveCrawledBoardResult(crawlResult)
 
     def crawlArticlesInBoard(self, boardName):
         latestBoardResultPath = self.getLatestBoardResultPath(boardName)
@@ -55,14 +45,13 @@ class PTTcrawler:
         allArticle = self.getAllArticle(boardName, allArticleInfoList)
 
         crawlResult = {
+            'boardName': boardName,
             'crawlArticles': allArticle,
             'crawlArticlesCount': len(allArticle),
             'timeStamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
 
-        crawlResultFilePath = self.getCrawlArticleResultFilePath(boardName)
-
-        self.db.saveCrawlResult(crawlResult, crawlResultFilePath)
+        self.db.saveCrawledArticleResult(crawlResult)
 
     def getLatestBoardResultPath(self, boardName):
         pattern = self.db.getDBPath() + 'boardResult*' + boardName + '.json'
@@ -93,9 +82,3 @@ class PTTcrawler:
                 print()
 
         return allArticle
-
-    def getCrawlArticleResultFilePath(self, boardName):
-        crawlDate = self.getCrawlDate()
-        crawlResultText = 'articleResult' + crawlDate
-        crawlResultFileName = crawlResultText + '_' + boardName + '.json'
-        return self.db.getDBPath() + crawlResultFileName
