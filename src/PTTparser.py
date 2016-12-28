@@ -1,5 +1,4 @@
 import requests
-import json
 import re
 from time import sleep
 from bs4 import BeautifulSoup
@@ -51,8 +50,7 @@ class PTTparser:
             parsePageNum -= 1
             print(str(i + 1) + '/' + str(pagesToBeParsed), 'page(s) parsed.')
 
-            sleep(1)
-
+        sleep(1)
         return parseResult
 
     def getLatestPageNum(self, soup):
@@ -82,6 +80,7 @@ class PTTparser:
         # jsonText = json.dumps(pageDict, sort_keys=True,
         #                       indent=4, ensure_ascii=False)
         # print(jsonText)
+        sleep(1)
         return pageDict
 
     def getAllTitleTagsFromPage(self, soup):
@@ -139,6 +138,7 @@ class PTTparser:
         # jsonText = json.dumps(articleDict, sort_keys=True,
         #                       indent=4, ensure_ascii=False)
         # print(jsonText)
+        sleep(1)
         return articleDict
 
     def getMetasFromArticle(self, soup):

@@ -1,4 +1,3 @@
-import json
 import glob
 from datetime import datetime
 
@@ -19,7 +18,7 @@ class PTTcrawler:
             self.crawlArticlesInBoard(board)
 
     def crawlBoard(self, boardName):
-        pagesToBeCrawl = 2
+        pagesToBeCrawl = 5
         print('Crawling board...', 'boardname:', boardName)
         parseBoardResult = self.pttParser.parseBoard(boardName, pagesToBeCrawl)
 
@@ -33,16 +32,15 @@ class PTTcrawler:
         self.db.saveCrawledBoardResult(crawlResult)
 
     def crawlArticlesInBoard(self, boardName):
-        latestBoardResultPath = self.getLatestBoardResultPath(boardName)
-
         print('Crawling articles in board...', 'boardname:', boardName)
+
+        latestBoardResultPath = self.getLatestBoardResultPath(boardName)
+        boardResult = self.db.loadCrawledBoardResult(latestBoardResultPath)
         print('load boardResult from', latestBoardResultPath)
-        with open(latestBoardResultPath, encoding='utf8') as f:
-            boardResult = json.load(f)
 
-        allArticleInfoList = self.getAllArticleInfoList(boardResult)
+        articleInfoList = self.getArticleInfoList(boardResult)
 
-        allArticle = self.getAllArticle(boardName, allArticleInfoList)
+        allArticle = self.getAllArticle(boardName, articleInfoList)
 
         crawlResult = {
             'boardName': boardName,
@@ -57,12 +55,12 @@ class PTTcrawler:
         pattern = self.db.getDBPath() + 'boardResult*' + boardName + '.json'
         return glob.glob(pattern)[-1]
 
-    def getAllArticleInfoList(self, boardResult):
-        allArticleInfoList = []
+    def getArticleInfoList(self, boardResult):
+        articleInfoList = []
         for page in boardResult['crawlPages']:
-            allArticleInfoList += page['articleList']
+            articleInfoList += page['articleList']
 
-        return allArticleInfoList
+        return articleInfoList
 
     def getAllArticle(self, boardName, articleInfoList):
         allArticle = []
