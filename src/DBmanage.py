@@ -27,7 +27,7 @@ class DBmanage:
         shutil.rmtree(self.databasePath)
         print('Database removed.')
 
-    def saveCrawlResult(self, crawlResult, crawlResultFilePath):
+    def saveResultFile(self, crawlResult, crawlResultFilePath):
         with open(crawlResultFilePath, 'w', encoding='utf-8') as f:
             json.dump(crawlResult, f, sort_keys=True,
                       indent=4, ensure_ascii=False)
@@ -40,7 +40,7 @@ class DBmanage:
     def saveCrawledBoardResult(self, crawlResult):
         boardName = crawlResult['boardName']
         crawlResultFilePath = self.getBoardResultFilePath(boardName)
-        self.saveCrawlResult(crawlResult, crawlResultFilePath)
+        self.saveResultFile(crawlResult, crawlResultFilePath)
 
     def getBoardResultFilePath(self, boardName):
         crawlDate = self.getCrawlDate()
@@ -51,10 +51,21 @@ class DBmanage:
     def saveCrawledArticleResult(self, crawlResult):
         boardName = crawlResult['boardName']
         crawlResultFilePath = self.getArticleResultFilePath(boardName)
-        self.saveCrawlResult(crawlResult, crawlResultFilePath)
+        self.saveResultFile(crawlResult, crawlResultFilePath)
 
     def getArticleResultFilePath(self, boardName):
         crawlDate = self.getCrawlDate()
         crawlResultText = 'articleResult' + crawlDate
         crawlResultFileName = crawlResultText + '_' + boardName + '.json'
         return self.databasePath + crawlResultFileName
+
+    def loadResultFile(self, path):
+        with open(path, encoding='utf8') as f:
+            result = json.load(f)
+        return result
+
+    def loadCrawledBoardResult(self, boardResultFilePath):
+        return self.loadResultFile(boardResultFilePath)
+
+    def loadCrawledArticleResult(self, articleResultFilePath):
+        return self.loadResultFile(articleResultFilePath)

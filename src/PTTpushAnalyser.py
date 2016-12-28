@@ -1,5 +1,3 @@
-import json
-
 from src.DBmanage import DBmanage
 
 
@@ -10,12 +8,6 @@ class PTTpushAnalyser:
 
     def analyse(self):
         pass
-
-    def loadCrawledResult(self, artucleResultFilePath):
-        with open(artucleResultFilePath, encoding='utf8') as f:
-            articleResult = json.load(f)
-
-        return articleResult
 
     def getAllAuthorPusherPairs(self, crawlArticles):
         allAuthorPusherPairs = []
