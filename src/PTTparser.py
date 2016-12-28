@@ -162,7 +162,7 @@ class PTTparser:
         for p in allPushs:
             message = {
                 'pushTag': p.find('span', class_='push-tag').text[0],
-                'pushUserID': p.find('span', class_='push-userid').text,
+                'pushUserID': p.find('span', class_='push-userid').text.strip(),
                 'pushContent': p.find('span', class_='push-content').text[2:]
             }
 
