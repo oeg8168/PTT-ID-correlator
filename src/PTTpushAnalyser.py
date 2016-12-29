@@ -1,3 +1,4 @@
+import collections
 from src.DBmanage import DBmanage
 
 
@@ -20,3 +21,8 @@ class PTTpushAnalyser:
                 allAuthorPusherPairs.append(authorPusherPair)
 
         return allAuthorPusherPairs
+
+    def filterAuthorPusherPair(self, authorPusherPair):
+        minDegree = 2
+        pairSummary = collections.Counter(authorPusherPair)
+        return [x for x in pairSummary if pairSummary[x] >= minDegree]
