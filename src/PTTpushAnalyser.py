@@ -1,4 +1,5 @@
 import collections
+import networkx as nx
 from src.DBmanage import DBmanage
 
 
@@ -26,3 +27,12 @@ class PTTpushAnalyser:
         minDegree = 2
         pairSummary = collections.Counter(authorPusherPair)
         return [x for x in pairSummary if pairSummary[x] >= minDegree]
+
+    def createNetworkGraph(self, authorPusherPair):
+        graph = nx.DiGraph()
+        for pair in authorPusherPair:
+            author = pair[0]
+            pusher = pair[1]
+            graph.add_edge(pusher, author)
+
+        nx.draw(graph, with_labels=True, font_color='green')
