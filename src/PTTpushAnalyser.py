@@ -1,5 +1,7 @@
 import collections
 import networkx as nx
+import matplotlib.pyplot as plt
+
 from src.DBmanage import DBmanage
 
 
@@ -35,4 +37,12 @@ class PTTpushAnalyser:
             pusher = pair[1]
             graph.add_edge(pusher, author)
 
+        return graph
+
+    def drawNetworkGraphThenShow(self, graph):
         nx.draw(graph, with_labels=True, font_color='green')
+        plt.show()
+
+    def drawNetworkGraphThenSave(self, graph):
+        nx.draw(graph, with_labels=True, font_color='green')
+        plt.savefig('networkGraph.png')
