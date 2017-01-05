@@ -27,8 +27,16 @@ class PTTpushAnalyser:
 
     def filterAuthorPusherPair(self, authorPusherPair):
         minDegree = 2
-        pairSummary = collections.Counter(authorPusherPair)
+        pairSummary = self.summarizeAuthorPusherPair(authorPusherPair)
+
         return [x for x in pairSummary if pairSummary[x] >= minDegree]
+
+    def summarizeAuthorPusherPair(self, authorPusherPair,
+                                  tagType=['推', '噓', '→']):
+        pickedPair = [pair for pair in authorPusherPair if pair[2] in tagType]
+        pairSummary = collections.Counter(pickedPair)
+
+        return pairSummary
 
     def createNetworkGraph(self, authorPusherPair):
         graph = nx.DiGraph()
@@ -36,6 +44,7 @@ class PTTpushAnalyser:
             author = pair[0]
             pusher = pair[1]
             graph.add_edge(pusher, author)
+            # graph.add_edge(pusher, author, weight=pairSummary[pushPair])
 
         return graph
 
