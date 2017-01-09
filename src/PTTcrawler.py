@@ -18,7 +18,7 @@ class PTTcrawler:
             self.crawlArticlesInBoard(board)
 
     def crawlBoard(self, boardName):
-        pagesToBeCrawl = 5
+        pagesToBeCrawl = 10
         print('Crawling board...', 'boardname:', boardName)
         parseBoardResult = self.pttParser.parseBoard(boardName, pagesToBeCrawl)
 
@@ -52,7 +52,8 @@ class PTTcrawler:
         self.db.saveCrawledArticleResult(crawlResult)
 
     def getLatestBoardResultPath(self, boardName):
-        pattern = self.db.getDBPath() + 'boardResult*' + boardName + '.json'
+        fileNamePattern = 'boardResult*' + boardName + '.json'
+        pattern = self.db.getSubFolderPath() + fileNamePattern
         return glob.glob(pattern)[-1]
 
     def getArticleInfoList(self, boardResult):

@@ -9,16 +9,25 @@ from datetime import datetime
 class DBmanage:
     def __init__(self):
         self.databasePath = './database/'
+        self.subFolderPath = self.databasePath + self.getCrawlDate() + '/'
         self.checkAndCreateDatabaseFolder()
 
     def getDBPath(self):
         return self.databasePath
+
+    def getSubFolderPath(self):
+        return self.subFolderPath
 
     def checkAndCreateDatabaseFolder(self):
         if not isdir(self.databasePath):
             print('Database folder not exists!')
             makedirs(self.databasePath)
             print('Created database.')
+
+        if not isdir(self.subFolderPath):
+            print('Sub-folder not exists!')
+            makedirs(self.subFolderPath)
+            print('Created subfolder at', self.subFolderPath)
 
     def updateDatabase(self):
         pass
@@ -46,7 +55,7 @@ class DBmanage:
         crawlDate = self.getCrawlDate()
         crawlResultText = 'boardResult' + crawlDate
         crawlResultFileName = crawlResultText + '_' + boardName + '.json'
-        return self.databasePath + crawlResultFileName
+        return self.subFolderPath + crawlResultFileName
 
     def saveCrawledArticleResult(self, crawlResult):
         boardName = crawlResult['boardName']
@@ -57,7 +66,7 @@ class DBmanage:
         crawlDate = self.getCrawlDate()
         crawlResultText = 'articleResult' + crawlDate
         crawlResultFileName = crawlResultText + '_' + boardName + '.json'
-        return self.databasePath + crawlResultFileName
+        return self.subFolderPath + crawlResultFileName
 
     def loadResultFile(self, path):
         with open(path, encoding='utf8') as f:
