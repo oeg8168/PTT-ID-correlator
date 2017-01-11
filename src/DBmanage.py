@@ -1,5 +1,6 @@
 import json
 import shutil
+import glob
 
 from os import makedirs
 from os.path import isdir
@@ -78,3 +79,7 @@ class DBmanage:
 
     def loadCrawledArticleResult(self, articleResultFilePath):
         return self.loadResultFile(articleResultFilePath)
+
+    def getLatestBoardResultPath(self, boardName):
+        pattern = self.subFolderPath + 'boardResult*' + boardName + '.json'
+        return glob.glob(pattern)[-1]

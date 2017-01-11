@@ -1,4 +1,3 @@
-import glob
 from datetime import datetime
 
 from src.PTTparser import PTTparser
@@ -34,7 +33,7 @@ class PTTcrawler:
     def crawlArticlesInBoard(self, boardName):
         print('Crawling articles in board...', 'boardname:', boardName)
 
-        latestBoardResultPath = self.getLatestBoardResultPath(boardName)
+        latestBoardResultPath = self.db.getLatestBoardResultPath(boardName)
         boardResult = self.db.loadCrawledBoardResult(latestBoardResultPath)
         print('load boardResult from', latestBoardResultPath)
 
@@ -50,11 +49,6 @@ class PTTcrawler:
         }
 
         self.db.saveCrawledArticleResult(crawlResult)
-
-    def getLatestBoardResultPath(self, boardName):
-        fileNamePattern = 'boardResult*' + boardName + '.json'
-        pattern = self.db.getSubFolderPath() + fileNamePattern
-        return glob.glob(pattern)[-1]
 
     def getArticleInfoList(self, boardResult):
         articleInfoList = []
