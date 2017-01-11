@@ -25,19 +25,19 @@ class DBmanage:
             makedirs(self.databasePath)
             print('Created database.')
 
+    def checkAndCreateSubFolder(self):
         if not isdir(self.subFolderPath):
             print('Sub-folder not exists!')
             makedirs(self.subFolderPath)
             print('Created subfolder at', self.subFolderPath)
-
-    def updateDatabase(self):
-        pass
 
     def removeDatabase(self):
         shutil.rmtree(self.databasePath)
         print('Database removed.')
 
     def saveResultFile(self, crawlResult, crawlResultFilePath):
+        self.checkAndCreateSubFolder()
+
         with open(crawlResultFilePath, 'w', encoding='utf-8') as f:
             json.dump(crawlResult, f, sort_keys=True,
                       indent=4, ensure_ascii=False)
