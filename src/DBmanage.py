@@ -3,6 +3,7 @@ import shutil
 import glob
 
 from os import makedirs
+from os import listdir
 from os.path import isdir
 from datetime import datetime
 
@@ -81,5 +82,8 @@ class DBmanage:
         return self.loadResultFile(articleResultFilePath)
 
     def getLatestBoardResultPath(self, boardName):
-        pattern = self.subFolderPath + 'boardResult*' + boardName + '.json'
+        latestVersion = listdir(self.databasePath)[-1]
+        latestSubFolder = self.databasePath + latestVersion
+        pattern = latestSubFolder + '/boardResult*' + boardName + '.json'
+
         return glob.glob(pattern)[-1]

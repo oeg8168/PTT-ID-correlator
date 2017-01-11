@@ -10,6 +10,12 @@ class PTTpushAnalyser:
     def __init__(self):
         db = DBmanage()
 
+    def analyseAll(self):
+        pass
+
+    def analyseBoard(self):
+        pass
+
     def analyse(self):
         pass
 
@@ -25,10 +31,8 @@ class PTTpushAnalyser:
 
         return allAuthorPusherPairs
 
-    def filterAuthorPusherPair(self, authorPusherPair):
-        minDegree = 2
+    def filterAuthorPusherPair(self, authorPusherPair, minDegree=2):
         pairSummary = self.summarizeAuthorPusherPair(authorPusherPair)
-
         return [x for x in pairSummary if pairSummary[x] >= minDegree]
 
     def summarizeAuthorPusherPair(self, authorPusherPair,
