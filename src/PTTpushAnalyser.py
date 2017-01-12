@@ -8,13 +8,37 @@ from src.DBmanage import DBmanage
 class PTTpushAnalyser:
 
     def __init__(self):
-        db = DBmanage()
+        self.db = DBmanage()
 
     def analyseAll(self):
-        pass
+        allAuthorPusherPairs = []
+        allArticleResultPath = self.db.getAllLatestArticleResultPath()
 
-    def analyseBoard(self):
-        pass
+        for resultPath in allArticleResultPath:
+            crawledArticleResult = self.db.loadCrawledArticleResult(resultPath)
+            crawlArticles = crawledArticleResult['crawlArticles']
+            allAuthorPusherPairs += self.getAllAuthorPusherPairs(crawlArticles)
+
+        filteredPair = self.filterAuthorPusherPair(allAuthorPusherPairs)
+
+        print('all author-pusher pairs:', len(allAuthorPusherPairs))
+        print('filtered author-pusher pairs:', len(filteredPair))
+
+        # NOT DONE YET
+
+    def analyseSingle(self, boardName):
+        resultPath = self.db.getLatestArticleResultPath(boardName)
+
+        crawledArticleResult = self.db.loadCrawledArticleResult(resultPath)
+        crawlArticles = crawledArticleResult['crawlArticles']
+        allAuthorPusherPairs = self.getAllAuthorPusherPairs(crawlArticles)
+
+        filteredPair = self.filterAuthorPusherPair(allAuthorPusherPairs)
+
+        print('all author-pusher pairs:', len(allAuthorPusherPairs))
+        print('filtered author-pusher pairs:', len(filteredPair))
+
+        # NOT DONE YET
 
     def analyse(self):
         pass
