@@ -81,9 +81,30 @@ class DBmanage:
     def loadCrawledArticleResult(self, articleResultFilePath):
         return self.loadResultFile(articleResultFilePath)
 
-    def getLatestBoardResultPath(self, boardName):
-        latestVersion = listdir(self.databasePath)[-1]
-        latestSubFolder = self.databasePath + latestVersion
-        pattern = latestSubFolder + '/boardResult*' + boardName + '.json'
+    def getLatestVersion(self):
+        return listdir(self.databasePath)[-1]
 
+    def getLatestSubFolder(self):
+        return self.databasePath + self.getLatestVersion() + '/'
+
+    def getAllLatestBoardResultPath(self):
+        latestSubFolder = self.getLatestSubFolder()
+        boardResultPattern = latestSubFolder + 'boardResult*.json'
+        allBoardResult = glob.glob(boardResultPattern)
+        return allBoardResult
+
+    def getAllLatestArticleResultPath(self):
+        latestSubFolder = self.getLatestSubFolder()
+        articleResultPattern = latestSubFolder + 'articleResult*.json'
+        allArticleResult = glob.glob(articleResultPattern)
+        return allArticleResult
+
+    def getLatestBoardResultPath(self, boardName):
+        latestSubFolder = self.getLatestSubFolder()
+        pattern = latestSubFolder + 'boardResult*' + boardName + '.json'
+        return glob.glob(pattern)[-1]
+
+    def getLatestArticleResultPath(self, boardName):
+        latestSubFolder = self.getLatestSubFolder()
+        pattern = latestSubFolder + 'articleResult*' + boardName + '.json'
         return glob.glob(pattern)[-1]
