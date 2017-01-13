@@ -9,6 +9,7 @@ class PTTpushAnalyser:
 
     def __init__(self):
         self.db = DBmanage()
+        self.graph = nx.DiGraph()
 
     def analyseAll(self):
         allAuthorPusherPairs = []
@@ -19,9 +20,7 @@ class PTTpushAnalyser:
             crawlArticles = crawledArticleResult['crawlArticles']
             allAuthorPusherPairs += self.getAllAuthorPusherPairs(crawlArticles)
 
-        filteredPair = self.filterAuthorPusherPair(allAuthorPusherPairs)
-
-        # NOT DONE YET
+        self.analyse(allAuthorPusherPairs)
 
     def analyseSingle(self, boardName):
         resultPath = self.db.getLatestArticleResultPath(boardName)
@@ -30,12 +29,11 @@ class PTTpushAnalyser:
         crawlArticles = crawledArticleResult['crawlArticles']
         allAuthorPusherPairs = self.getAllAuthorPusherPairs(crawlArticles)
 
+        self.analyse(allAuthorPusherPairs)
+
+    def analyse(self, allAuthorPusherPairs):
         filteredPair = self.filterAuthorPusherPair(allAuthorPusherPairs)
-
-        # NOT DONE YET
-
-    def analyse(self):
-        pass
+        self.createNetworkGraph(filteredPair)
 
     def getAllAuthorPusherPairs(self, crawlArticles):
         allAuthorPusherPairs = []
@@ -69,19 +67,17 @@ class PTTpushAnalyser:
         return pairSummary
 
     def createNetworkGraph(self, authorPusherPair):
-        graph = nx.DiGraph()
+        print(len(authorPusherPair))
         for pair in authorPusherPair:
             author = pair[0]
             pusher = pair[1]
-            graph.add_edge(pusher, author)
-            # graph.add_edge(pusher, author, weight=pairSummary[pushPair])
+            self.graph.add_edge(pusher, author)
+            # self.graph.add_edge(pusher, author, weight=pairSummary[pushPair])
 
-        return graph
-
-    def drawNetworkGraphThenShow(self, graph):
-        nx.draw(graph, with_labels=True, font_color='green')
+    def drawNetworkGraphThenShow(self):
+        nx.draw(self.graph, with_labels=True, font_color='green')
         plt.show()
 
-    def drawNetworkGraphThenSave(self, graph):
-        nx.draw(graph, with_labels=True, font_color='green')
-        plt.savefig('networkGraph.png')
+    def drawNetworkGraphThenSave(self, path='networkGraph.png'):
+        nx.draw(self.graph, with_labels=True, font_color='green')
+        plt.savefig(path)
