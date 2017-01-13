@@ -21,9 +21,6 @@ class PTTpushAnalyser:
 
         filteredPair = self.filterAuthorPusherPair(allAuthorPusherPairs)
 
-        print('all author-pusher pairs:', len(allAuthorPusherPairs))
-        print('filtered author-pusher pairs:', len(filteredPair))
-
         # NOT DONE YET
 
     def analyseSingle(self, boardName):
@@ -34,9 +31,6 @@ class PTTpushAnalyser:
         allAuthorPusherPairs = self.getAllAuthorPusherPairs(crawlArticles)
 
         filteredPair = self.filterAuthorPusherPair(allAuthorPusherPairs)
-
-        print('all author-pusher pairs:', len(allAuthorPusherPairs))
-        print('filtered author-pusher pairs:', len(filteredPair))
 
         # NOT DONE YET
 
@@ -57,7 +51,15 @@ class PTTpushAnalyser:
 
     def filterAuthorPusherPair(self, authorPusherPair, minDegree=2):
         pairSummary = self.summarizeAuthorPusherPair(authorPusherPair)
-        return [x for x in pairSummary if pairSummary[x] >= minDegree]
+        filteredPair = [x for x in pairSummary if pairSummary[x] >= minDegree]
+
+        print('author-pusher pairs filter result')
+        print('minDegree set to', minDegree)
+        print('before:', len(authorPusherPair))
+        print('after :', len(filteredPair))
+        print()
+
+        return filteredPair
 
     def summarizeAuthorPusherPair(self, authorPusherPair,
                                   tagType=['推', '噓', '→']):
