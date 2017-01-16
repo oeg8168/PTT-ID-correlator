@@ -27,16 +27,10 @@ class PTTparser:
         for tag in hotBoardTags:
             hotBoardList.append(tag.find_all('td')[1].text)
 
-        # print('=====Hot boards=====')
-        # for hb in hotBoardList:
-            # print(hb)
-        # print('count:', len(hotBoardList))
-
         return hotBoardList
 
     def parseBoard(self, boardName, pagesToBeParsed=100):
         boardURL = self.PTTaddress + boardName + '/index.html'
-        # print(boardURL)
 
         soup = self.getSoup(boardURL)
 
@@ -45,7 +39,6 @@ class PTTparser:
         parseResult = []
         parsePageNum = latestPageNum
         for i in range(pagesToBeParsed):
-            # print('page: ' + str(parsePageNum))
             parseResult.append(self.parsePage(boardName, parsePageNum))
             parsePageNum -= 1
             print(str(i + 1) + '/' + str(pagesToBeParsed), 'page(s) parsed.')
@@ -63,7 +56,6 @@ class PTTparser:
     def parsePage(self, boardName, pageNum):
         pageIndex = '/index' + str(pageNum) + '.html'
         pageURL = self.PTTaddress + boardName + pageIndex
-        # print(pageURL)
 
         soup = self.getSoup(pageURL)
 
@@ -76,10 +68,6 @@ class PTTparser:
             'articleList': articleList
         }
 
-        # print('=====JSON=====')
-        # jsonText = json.dumps(pageDict, sort_keys=True,
-        #                       indent=4, ensure_ascii=False)
-        # print(jsonText)
         sleep(1)
         return pageDict
 
@@ -119,7 +107,6 @@ class PTTparser:
 
     def parseArticle(self, boardName, articleID):
         articleURL = self.PTTaddress + boardName + '/' + articleID + '.html'
-        # print(articleURL)
 
         soup = self.getSoup(articleURL)
 
@@ -134,10 +121,6 @@ class PTTparser:
             'pushMessages': self.getPushMessagesFromArticle(allPushs)
         }
 
-        # print('=====JSON=====')
-        # jsonText = json.dumps(articleDict, sort_keys=True,
-        #                       indent=4, ensure_ascii=False)
-        # print(jsonText)
         sleep(1)
         return articleDict
 
