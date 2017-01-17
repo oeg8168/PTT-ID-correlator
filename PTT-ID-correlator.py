@@ -1,5 +1,39 @@
 import argparse
 
+from src.PTTcrawler import PTTcrawler
+from src.PTTpushAnalyser import PTTpushAnalyser
+
+
+def main():
+    args = parseArguments()
+
+    pushAnalyser = PTTpushAnalyser()
+
+    if args.update:
+        print('=== update ===')
+        crawler = PTTcrawler()
+        crawler.crawlHotBoards()
+
+    elif args.run_save_all:
+        print('=== run save all ===')
+        pushAnalyser.analyseAll()
+        pushAnalyser.drawNetworkGraphThenSave()
+
+    elif args.run_show_all:
+        print('=== run show all ===')
+        pushAnalyser.analyseAll()
+        pushAnalyser.drawNetworkGraphThenShow()
+
+    elif args.run_save:
+        print('=== run save', args.run_save, '===')
+        pushAnalyser.analyseSingle(args.run_save)
+        pushAnalyser.drawNetworkGraphThenSave()
+
+    elif args.run_show:
+        print('=== run show', args.run_show, '===')
+        pushAnalyser.analyseSingle(args.run_show)
+        pushAnalyser.drawNetworkGraphThenShow()
+
 
 def parseArguments():
     cmdArgsParser = argparse.ArgumentParser()
@@ -22,10 +56,6 @@ def parseArguments():
 
     args = cmdArgsParser.parse_args()
     return args
-
-
-def main():
-    args = parseArguments()
 
 
 if __name__ == '__main__':
