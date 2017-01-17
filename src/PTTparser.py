@@ -29,7 +29,7 @@ class PTTparser:
 
         return hotBoardList
 
-    def parseBoard(self, boardName, pagesToBeParsed=100):
+    def parseBoard(self, boardName, pagesToBeParsed=10):
         boardURL = self.PTTaddress + boardName + '/index.html'
 
         soup = self.getSoup(boardURL)
