@@ -67,7 +67,6 @@ class PTTpushAnalyser:
         return pairSummary
 
     def createNetworkGraph(self, authorPusherPair):
-        print(len(authorPusherPair))
         for pair in authorPusherPair:
             author = pair[0]
             pusher = pair[1]
