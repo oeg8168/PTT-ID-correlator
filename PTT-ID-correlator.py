@@ -2,6 +2,7 @@ import argparse
 
 from src.PTTcrawler import PTTcrawler
 from src.PTTpushAnalyser import PTTpushAnalyser
+from src.DBmanage import DBmanage
 
 
 def main():
@@ -13,6 +14,10 @@ def main():
         print('=== update ===')
         crawler = PTTcrawler()
         crawler.crawlHotBoards()
+
+    elif args.view_board_list:
+        db = DBmanage()
+        db.getLatestBoardLists()
 
     elif args.run_save_all:
         print('=== run save all ===')
@@ -41,6 +46,9 @@ def parseArguments():
 
     cmdGroup.add_argument('--update', action='store_true',
                           help='Update database')
+
+    cmdGroup.add_argument('--view_board_list', action='store_true',
+                          help='View available boards in latest database')
 
     cmdGroup.add_argument('--run_save_all', action='store_true',
                           help='Run and save as imagefile (all board)')
