@@ -5,6 +5,7 @@ import glob
 from os import makedirs
 from os import listdir
 from os.path import isdir
+from os.path import basename
 from datetime import datetime
 
 
@@ -108,3 +109,12 @@ class DBmanage:
         latestSubFolder = self.getLatestSubFolder()
         pattern = latestSubFolder + 'articleResult*' + boardName + '.json'
         return glob.glob(pattern)[-1]
+
+    def getLatestBoardLists(self):
+        print('=== Available boards in database ===')
+        print('( database version:', self.getLatestVersion(), ')')
+
+        allArticleResultPath = self.getAllLatestArticleResultPath()
+        for resultPath in allArticleResultPath:
+            fileName = basename(resultPath).replace('.json', '')
+            print(fileName.split('_', 1)[1])
