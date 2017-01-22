@@ -74,9 +74,12 @@ class PTTpushAnalyser:
             # self.graph.add_edge(pusher, author, weight=pairSummary[pushPair])
 
     def drawNetworkGraphThenShow(self):
+        plt.figure(figsize=(8, 8))
         nx.draw(self.graph, with_labels=True, font_color='green')
         plt.show()
 
     def drawNetworkGraphThenSave(self, path='networkGraph.png'):
+        plt.figure(figsize=(8, 8))
         nx.draw(self.graph, with_labels=True, font_color='green')
         plt.savefig(path)
+        print('Network graph saved at', path)
