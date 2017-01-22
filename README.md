@@ -31,5 +31,8 @@
     --run_show BOARDNAME
 計算資料庫中特定看板 (參數 BOARDNAME) 的推文資料，並顯示在互動式的視窗中
 
+## Author-Pusher Pair 圖例
+![Legend](./author-pusher-pair_legend.png)
+
 ## 範例
 ![Example graph](./example.png)
