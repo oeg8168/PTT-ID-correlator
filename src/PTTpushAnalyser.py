@@ -31,6 +31,18 @@ class PTTpushAnalyser:
 
         self.analyse(allAuthorPusherPairs)
 
+    def analyseByIDinAllBoard(self, queryID):
+        allAuthorPusherPairs = []
+        allArticleResultPath = self.db.getAllLatestArticleResultPath()
+
+        for resultPath in allArticleResultPath:
+            crawledArticleResult = self.db.loadCrawledArticleResult(resultPath)
+            crawlArticles = crawledArticleResult['crawlArticles']
+            allAuthorPusherPairs += self.getAllAuthorPusherPairs(crawlArticles)
+
+        filteredPair = self.filterAuthorPusherPairByID(allAuthorPusherPairs, queryID)
+        self.createNetworkGraph(filteredPair)
+
     def analyse(self, allAuthorPusherPairs):
         filteredPair = self.filterAuthorPusherPair(allAuthorPusherPairs)
         self.createNetworkGraph(filteredPair)
@@ -61,10 +73,11 @@ class PTTpushAnalyser:
 
     def filterAuthorPusherPairByID(self, authorPusherPair, queryID):
         filteredPair = self.filterAuthorPusherPair(authorPusherPair)
-        filteredPair = [pair for pair in authorPusherPair
+        filteredPair = [pair for pair in filteredPair
                         if queryID in (pair[0], pair[1])]
 
         print('author-pusher pairs filter result (filter by ID)')
+        print('query id:', queryID)
         print('before:', len(authorPusherPair))
         print('after :', len(filteredPair))
         print()
