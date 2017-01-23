@@ -59,6 +59,18 @@ class PTTpushAnalyser:
 
         return filteredPair
 
+    def filterAuthorPusherPairByID(self, authorPusherPair, queryID):
+        filteredPair = self.filterAuthorPusherPair(authorPusherPair)
+        filteredPair = [pair for pair in authorPusherPair
+                        if queryID in (pair[0], pair[1])]
+
+        print('author-pusher pairs filter result (filter by ID)')
+        print('before:', len(authorPusherPair))
+        print('after :', len(filteredPair))
+        print()
+
+        return filteredPair
+
     def summarizeAuthorPusherPair(self, authorPusherPair,
                                   tagType=['推', '噓', '→']):
         pickedPair = [pair for pair in authorPusherPair if pair[2] in tagType]
