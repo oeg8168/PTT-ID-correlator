@@ -16,6 +16,7 @@ def main():
         crawler.crawlHotBoards()
 
     elif args.view_board_list:
+        print('=== view board list ===')
         db = DBmanage()
         db.getLatestBoardLists()
 
@@ -27,6 +28,16 @@ def main():
     elif args.run_show_all:
         print('=== run show all ===')
         pushAnalyser.analyseAll()
+        pushAnalyser.drawNetworkGraphThenShow()
+
+    elif args.run_save_all_byID:
+        print('=== run save all by ID ===')
+        pushAnalyser.analyseByIDinAllBoard(args.run_save_all_byID)
+        pushAnalyser.drawNetworkGraphThenSave()
+
+    elif args.run_show_all_byID:
+        print('=== run save all by ID ===')
+        pushAnalyser.analyseByIDinAllBoard(args.run_show_all_byID)
         pushAnalyser.drawNetworkGraphThenShow()
 
     elif args.run_save:
@@ -54,13 +65,19 @@ def parseArguments():
                           help='Run and save as imagefile (all board)')
 
     cmdGroup.add_argument('--run_show_all', action='store_true',
-                          help='Run and show in an GUI window (all board)')
+                          help='Run and show in GUI window (all board)')
+
+    cmdGroup.add_argument('--run_save_all_byID', metavar='QUERY_ID',
+                          help='Run and save as imagefile (all board by ID)')
+
+    cmdGroup.add_argument('--run_show_all_byID', metavar='QUERY_ID',
+                          help='Run and show in GUI window (all board by ID)')
 
     cmdGroup.add_argument('--run_save', metavar='BOARDNAME',
                           help='Run and save as image file (single board)')
 
     cmdGroup.add_argument('--run_show', metavar='BOARDNAME',
-                          help='Run and show in an GUI window (single board)')
+                          help='Run and show in GUI window (single board)')
 
     args = cmdArgsParser.parse_args()
     return args
