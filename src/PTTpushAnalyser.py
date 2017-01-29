@@ -65,11 +65,9 @@ class PTTpushAnalyser:
         pairSummary = self.summarizeAuthorPusherPair(authorPusherPair)
         filteredPair = [x for x in pairSummary if pairSummary[x] >= minDegree]
 
-        print('author-pusher pairs filter result')
+        print('author-pusher pairs filter result (filter by node degree)')
         print('minDegree set to', minDegree)
-        print('before:', len(authorPusherPair))
-        print('after :', len(filteredPair))
-        print()
+        self.printFilterInfo(len(authorPusherPair), len(filteredPair))
 
         return filteredPair
 
@@ -79,9 +77,7 @@ class PTTpushAnalyser:
 
         print('author-pusher pairs filter result (filter by ID)')
         print('query id:', queryID)
-        print('before:', len(authorPusherPair))
-        print('after :', len(filteredPair))
-        print()
+        self.printFilterInfo(len(authorPusherPair), len(filteredPair))
 
         return filteredPair
 
@@ -91,6 +87,11 @@ class PTTpushAnalyser:
         pairSummary = collections.Counter(pickedPair)
 
         return pairSummary
+
+    def printFilterInfo(self, before, after):
+        print('before:', before)
+        print('after :', after)
+        print()
 
     def createNetworkGraph(self, authorPusherPair):
         for pair in authorPusherPair:
